@@ -17,7 +17,7 @@ docker build -t search_engine .
 docker run --rm -p 3000:5000 -it search_engine
 ```
 #### 4. Final steps
-- Go to `localhost:3000/` and enter your search query
+- Go to `http://0.0.0.0:3000/` and enter your search query
 ## Technologies Used
 - [PySpark](https://pypi.org/project/pyspark/) 
 - [Flask](https://flask.palletsprojects.com/en/3.0.x/)

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Movie Finder</title>
+</head>
+<body>
+    <h1>Find Movies</h1>
+    <input type="text" id="movie-query" placeholder="Enter movie title or keyword">
+    <button onclick="findMovies()">Search</button>
+    <div id="results"></div>
+
+    <script>
+        function findMovies() {
+            const queries = [document.getElementById("movie-query").value]; // Convert to list
+            const xhr = new XMLHttpRequest();
+
+            xhr.open("POST", "http://0.0.0.0:3000/find_movies");
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    const resultsDiv = document.getElementById("results");
+                    resultsDiv.innerHTML = ""; // Clear previous results
+
+                    const movies = JSON.parse(xhr.responseText);
+                    movies.forEach(movie => {
+                        const resultDiv = document.createElement("div");
+                        resultDiv.innerHTML = `
+                            <h3>${movie.MovieTitle}</h3>
+                            <p>WikipediaDocId: ${movie.WikipediaDocId}</p>
+                            <p>Match: ${movie.Match}</p>
+                        `;
+                        resultsDiv.appendChild(resultDiv);
+                    });
+                } else {
+                    alert("Error fetching movies: " + xhr.statusText);
+                }
+            };
+
+            xhr.onerror = function() {
+                alert("Network error occurred.");
+            };
+
+            xhr.send(JSON.stringify({ queries }));
+        }
+    </script>
+</body>
+</html>

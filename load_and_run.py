@@ -1,43 +1,11 @@
-import numpy as np
 import pandas as pd
 from pyspark.sql import SparkSession
-import nltk
-import string
-from nltk.corpus import stopwords
 from flask import Flask, request, jsonify, render_template
-
-nltk.download('stopwords')
-english_stopwords = set(stopwords.words('english'))
-
-def sanitise_summary(summary):
-    punctuation_removed_summary = summary
-    for char in string.punctuation:
-        punctuation_removed_summary = punctuation_removed_summary.replace(char, ' ')
-    lowercase_punctuation_removed_summary = punctuation_removed_summary.lower().strip()
-    return lowercase_punctuation_removed_summary
-
-def remove_stopwords(summary):
-    sanitised_summary = sanitise_summary(summary)
-    tokens = sanitised_summary.split()
-    cleaned_words = [word for word in tokens if word not in english_stopwords]
-    return cleaned_words
-
-def generateQueryDocTf(summary):
-    clean_tokens = remove_stopwords(summary)
-    query_docLen_tuple_list = [(word, len(clean_tokens)) for word in clean_tokens]
-    return list(set(query_docLen_tuple_list)), summary.lower()
-
-def calculate_cosine_similarity(query, doc):
-    query_magnitude = np.sqrt(np.sum([i ** 2 for i in query]))
-    doc_magnitude = np.sqrt(np.sum([i ** 2 for i in doc]))
-    product = np.sum([i * j for i, j in zip(query, doc)])
-    if query_magnitude == 0 or doc_magnitude == 0:
-        return 0
-    return product / (query_magnitude * doc_magnitude)
+from utils import calculate_cosine_similarity, generateQueryDocTf
 
 def load_and_clean_movie_titles():
     # uploaded movie_metadata.tsv manually
-    data = spark.read.format("csv").option("delimiter", "\t").option("header", "false").load("jobs/movie_metadata.tsv")
+    data = spark.read.format("csv").option("delimiter", "\t").option("header", "false").load("corpus/movie.metadata.tsv")
     # rename the first and third column to wiki id and movie title
     data = data[["_c0", "_c2"]].withColumnRenamed("_c0", "WikipediaDocId").withColumnRenamed("_c2", "MovieTitle").collect()
     # create a dict from the table with key as doc_id and value as movie title
@@ -93,7 +61,6 @@ def home():
 def find_movies():
     queries = request.json['queries']
     return retrieve_movies(queries)
-    return jsonify({'message': 'Movies found successfully'})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')

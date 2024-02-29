@@ -6,8 +6,8 @@ The goal is to create a search engine that allows users to search for movies bas
 ## Getting Started
 
 #### 1. Data Upload
-	- Download the corpus from http://www.cs.cmu.edu/~ark/personas/data/MovieSummaries.tar.gz.
-	- Extract and add the **plot_summaries.txt** and **movie.metadata.tsv** file to the **corpus** folder to the repo.
+- Download the corpus from http://www.cs.cmu.edu/~ark/personas/data/MovieSummaries.tar.gz.
+- Extract and add the **plot_summaries.txt** and **movie.metadata.tsv** file to the **corpus** folder to the repo.
 #### 2. Build the docker container
 ```docker
 docker build -t search_engine .

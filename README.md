@@ -22,6 +22,7 @@ docker run --rm -p 3000:5000 -it search_engine
 - [PySpark](https://pypi.org/project/pyspark/) 
 - [Flask](https://flask.palletsprojects.com/en/3.0.x/)
 - [Docker](https://www.docker.com)
+- [React](https://react.dev)
 
 ## License
 This project is licensed under the [MIT License](LICENSE).
